@@ -1,6 +1,7 @@
 package riccardogulin.u5d7.controllers;
 
 import org.springframework.web.bind.annotation.*;
+import riccardogulin.u5d7.payloads.NewUserPayload;
 
 @RestController // N.B. @RestController != @Controller
 // @Controller è l'annotazione da NON USARE
@@ -56,4 +57,31 @@ public class ExampleController {
 		// del caso (rischiamo tante NullPointerException!)
 		return "I parametri inseriti sono : " + name.toUpperCase() + ", " + age;
 	}
+
+	// ************************************************ PATH PARAMETERS *************************************************
+	@GetMapping("/pathParamExample/{param}")
+	// GET http://localhost:3001/examples/pathParamExample/1234
+	// GET http://localhost:3001/examples/pathParamExample/1235
+	// GET http://localhost:3001/examples/pathParamExample/ciao
+	// N.B. IL SEGNAPOSTO TRA LE GRAFFE DEVE CHIAMARSI ESATTAMENTE COME IL PARAMETRO SPECIFICATO NELLE TONDE DEL METODO
+	public String pathParamExample(@PathVariable String param) {
+		return "Il parametro inserito è: " + param;
+	}
+
+	// ********************************************** REQUEST BODY *******************************************************
+	@PostMapping("/payloadExample")
+	public NewUserPayload payloadExample(@RequestBody NewUserPayload body) {
+		// Cosa fondamentale quando abbiamo bisogno di un payload è, oltre ad utilizzare l'annotazione @RequestBody, definire
+		// il TIPO CORRETTO del payload. String non va bene perché rappresenta solo testo e non oggetti
+		// Quello che si fa solitamente è dichiarare un tipo ad hoc (NewUserPayload) che abbia tutte le caratteristiche del JSON
+		// in entrata. Spring convertirà quel JSON in oggetto di tipo NewUserPayload
+
+		System.out.println(body);
+		return body;
+		// Anche per quanto riguarda il payload della response, invece che usare String (il quale torna un payload text/plain)
+		// se vogliamo ritornare un JSON (SEMPRE) è necessario quindi avere una CLASSE AD HOC
+		// Spring converte l'oggetto JAVA in JSON e lo inserisce come payload nella risposta
+	}
+
+
 }
